@@ -1,0 +1,17 @@
+#!/bin/bash
+#search file created the last 30 minutes in specific pattern and put it in variable
+FILE="$(find /home/swm/logs/archive/ -cmin -360 |grep -i selfReg_NotSupported)"
+FILESIZE="$(du -m "$FILE" | cut -f1)"
+echo $FILESIZE
+echo $FILE
+if [ -z "$FILE" ]
+then
+   echo "Log file does not exist" | mutt -s "SUBJECT TEST"  -- aviram.boxbaum@redbend.com
+else
+   if [ "$FILESIZE" -gt 100 ]
+   then
+       echo "File too big for mail" | mutt -s "SUBJECT TEST"  -- aviram.boxbaum@redbend.com
+   else
+   echo "Log file attached" | mutt -s "SUBJECT TEST" -a "$FILE" -- aviram.boxbaum@redbend.com
+   fi
+fi
